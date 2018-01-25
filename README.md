@@ -8,11 +8,11 @@ When working on a subsystem, commit all changes to a branch dedicated to said su
 
 ### If you are using Eclipse (Recommended)
 1. Clone the repository (Preferably the branch you are working on, _not_ master)
-2. Set your Eclipse workspace to [Location]/Assignment#-Workspace
+2. Set your Eclipse workspace to [Location]/Assignments-Workspace
 3. Import the existing Java project "DuckSouls"
 
 ### If you are using anything other than Eclipse
 1. Clone the repository (Preferably the branch you are working on, _not_ master)
-2. The \*.java files are in [Location]/Assignment#-Workspace/DuckSouls/src/
+2. The \*.java files are in [Location]/Assignments-Workspace/Assignment#/src/
 
 Viola! 
