@@ -1,51 +1,67 @@
-
 /**
- * TODO: Class JavaDoc
  * 
- * @author T7
- * @version 0.1
+ * @author wylee
  *
  */
 public class BankAccount {
-	
-	//Instance Variables
-	
-	private double balance, overdraftAmount = 100;
 
+	private double balance = 100;
+	private double overdraftAmount = 100;
+	
 	/**
-	 * TODO: Deposit JavaDoc
-	 * 
-	 * @param amount
+	 * Deposit money into the account.
+	 *  
+	 * @param amount Total amount to deposit
 	 */
 	public void deposit(double amount) {
 		
-	}
+		if (amount > 0) {
+			balance += amount;
+			System.out.println("Your new balance is $" + Double.toString(balance));
+		}
+		
+	}//end of deposit
 	
 	/**
-	 * TODO: Withdraw JavaDoc
-	 * 
-	 * @param amount
+	 * Withdraw money from the account, as long as the amount being taken does not 
+	 * bring the account balance below the overdraft limit.
+	 *  
+	 * @param amount Total amount to withdraw
 	 */
 	public void withdraw(double amount) {
 		
-	}
+		if (amount > 0) {
+			double newBalance = balance - amount;
+			
+			if (newBalance >= (0 - overdraftAmount)) {
+				balance = newBalance;
+				System.out.println("Your new balance is $" + Double.toString(newBalance));
+			}
+			else {
+				System.out.println("Can't withdraw: Overdraft detected");
+			}
+		}
+		
+	}//end of withdraw
 	
 	/**
-	 * TODO: Balance Getter JavaDoc
+	 * Returns the value of the balance variable.
 	 * 
-	 * @param amount
+	 * @return balance Total balance of the account.
 	 */
 	public double getBalance() {
-		return this.balance;
-	}
+		
+		return(balance);
+		
+	}//end of getBalance
 	
-	/**
-	 * TODO: Overdraft Setter JavaDoc
-	 * 
-	 * @param amount
-	 */
 	public void setOverdraftAmount(double amount) {
-		this.overdraftAmount = amount;
-	}
-
-}
+		
+		if (amount > 0) {
+			overdraftAmount = amount;
+		}
+		
+		
+	}//end of setOverdraftAmount
+	
+}//end of BankAccount class
