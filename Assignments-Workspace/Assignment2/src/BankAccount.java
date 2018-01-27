@@ -5,8 +5,8 @@
  */
 public class BankAccount {
 
-	private double balance = 100;
-	private double overdraftAmount = 100;
+	private double balance = 0.0;
+	private double overdraftAmount = 100.0;
 	
 	/**
 	 * Deposit money into the account.
@@ -16,8 +16,8 @@ public class BankAccount {
 	public void deposit(double amount) {
 		
 		if (amount > 0) {
-			balance += amount;
-			System.out.println("Your new balance is $" + Double.toString(balance));
+			this.balance += amount;
+			System.out.println("Your new balance is $" + Double.toString(this.balance));
 		}
 		
 	}//end of deposit
@@ -31,15 +31,16 @@ public class BankAccount {
 	public void withdraw(double amount) {
 		
 		if (amount > 0) {
-			double newBalance = balance - amount;
+			double newBalance = this.balance - amount;
 			
-			if (newBalance >= (0 - overdraftAmount)) {
-				balance = newBalance;
+			if (newBalance >= (0 - this.overdraftAmount)) {
+				this.balance = newBalance;
 				System.out.println("Your new balance is $" + Double.toString(newBalance));
 			}
 			else {
 				System.out.println("Can't withdraw: Overdraft detected");
 			}
+			
 		}
 		
 	}//end of withdraw
@@ -51,14 +52,14 @@ public class BankAccount {
 	 */
 	public double getBalance() {
 		
-		return(balance);
+		return(this.balance);
 		
 	}//end of getBalance
 	
 	public void setOverdraftAmount(double amount) {
 		
-		if (amount > 0) {
-			overdraftAmount = amount;
+		if (amount >= 0) {
+			this.overdraftAmount = amount;
 		}
 		
 		
