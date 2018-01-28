@@ -67,7 +67,8 @@ public class BankAccount {
 	/**
 	 * Returns the value of the account balance.
 	 * 
-	 * @return balance Total balance of the account.
+	 * @return balance
+	 * 				Total balance of the account.
 	 */
 	public double getBalance() {
 
