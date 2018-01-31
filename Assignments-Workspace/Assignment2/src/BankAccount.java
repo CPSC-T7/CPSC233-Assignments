@@ -3,12 +3,11 @@
  * Defines a bank account from which you can get the balance, set the overdraft
  * amount, deposit, and withdraw.
  * 
- * @author Wylee McAndrews
- * @author Matthew Allwight
+ * @author T7
  * @version 1.2.1
  */
 public class BankAccount {
-	
+
 	// Instance Variables
 	private double balance = 0.0, overdraftAmount = 100.0;
 
@@ -67,8 +66,7 @@ public class BankAccount {
 	/**
 	 * Returns the value of the account balance.
 	 * 
-	 * @return balance
-	 * 				Total balance of the account.
+	 * @return balance Total balance of the account.
 	 */
 	public double getBalance() {
 
@@ -90,7 +88,7 @@ public class BankAccount {
 
 			// Set the amount
 			this.overdraftAmount = amount;
-			
+
 		}
 
 	}// End of setOverdraftAmount method
