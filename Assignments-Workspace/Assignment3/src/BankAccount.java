@@ -1,15 +1,44 @@
 
 /**
- * Defines a bank account from which you can get the balance, set the overdraft
- * amount, deposit, and withdraw.
+ * This class defines a bank account from which you can get the balance, set the
+ * overdraft amount, deposit, and withdraw. You can also tie a customer to an
+ * account.
  * 
  * @author T7
- * @version 1.2.1
+ * @version 1.3.1
  */
 public class BankAccount {
 
-	// Instance Variables
+	// INSTANCE VARIABLES
+
 	private double balance = 0.0, overdraftAmount = 100.0;
+	private Customer customer;
+
+	// CONSTRUCTORS
+
+	/**
+	 * Creates an empty bank account.
+	 */
+	public BankAccount() {
+		
+		// Empty
+
+	}
+
+	/**
+	 * Creates a bank account with a customer and a balance.
+	 * 
+	 * @param customer The customer tied to the bank account.
+	 * @param balance The balance to store in the bank account.
+	 */
+	public BankAccount(Customer customer, double balance) {
+
+		this.setCustomer(customer);
+		this.balance = balance;
+
+	}
+
+	// METHODS
 
 	/**
 	 * Deposits a specified amount into the account balance.
@@ -92,5 +121,13 @@ public class BankAccount {
 		}
 
 	}// End of setOverdraftAmount method
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 
 }// End of BankAccount class
