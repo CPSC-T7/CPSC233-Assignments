@@ -1,8 +1,8 @@
 /**
  * Defines customer information, allows user to retrieve or update that information as required.
  * 
- * @author Cass
- * @version 1.0.0
+ * @author T06-1
+ * @version 1.0.1
  */
 public class Customer{
 	
