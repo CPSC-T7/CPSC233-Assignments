@@ -1,57 +1,58 @@
 
 /**
- * Defines a bank account from which you can get the balance, set the overdraft
- * amount, deposit, and withdraw. Get customer information related to an account.
+ * This class defines a bank account from which you can get the balance, set the
+ * overdraft amount, deposit, and withdraw, as well as tie a Customer object to
+ * it.
  * 
- * @author T06-1
- * @version 2.0.0
+ * @version 2.1.0
+ * @author T07
  */
 public class BankAccount {
 
-//INSTANCE VARIABLES
-	
+	// INSTANCE VARIABLES
+
 	private double balance = 0.0, overdraftAmount = 100.0;
 	private Customer customer;
 
-
-//CONSTRUCTORS
-	
-	/**
-	 * <Default Constructor>
-	 * Initialize with default values
-	 *
-	 */
-	BankAccount(){}//End of default constructor
+	// CONSTRUCTORS
 
 	/**
-	 * Set customer information for default bank account
-	 *
-	 * @param newCustomer
-	 *			Source of customer information
+	 * Initialize an empty bank account. (Not actually needed to be defined)
 	 */
-	BankAccount(Customer newCustomer){
+	BankAccount() {
 
-		this.customer = newCustomer;
+		// Empty
 
-	}//End of constructor
+	}// End of default constructor
 
 	/**
-	 * Set customer information and account balance for a bank account
+	 * Creates a bank account with a customer tied to it.
 	 *
-	 * @param newCustomer
-	 *			Source of customer information for bank account
-	 * @param newBalance
-	 *			Total amount in bank account
+	 * @param customer
+	 *            The customer to tie to the bank account.
 	 */
-	BankAccount(Customer newCustomer, double newBalance){
+	BankAccount(Customer customer) {
 
-		this.customer = new Customer(newCustomer);
-		this.balance = newBalance;
+		this.customer = new Customer(customer);
 
-	}//End of constructor
+	}// End of constructor
 
+	/**
+	 * Creates a bank account with a customer tied to it, and a starting balance.
+	 *
+	 * @param customer
+	 *            The customer to tie to the bank account.
+	 * @param balance
+	 *            Initial amount in bank account.
+	 */
+	BankAccount(Customer customer, double balance) {
 
-//METHODS
+		this.customer = new Customer(customer);
+		this.balance = balance;
+
+	}// End of constructor
+
+	// METHODS
 
 	/**
 	 * Deposits a specified amount into the account balance.
@@ -85,14 +86,14 @@ public class BankAccount {
 		if (amount > 0) {
 
 			// Calculate what the balance would be after the withdrawal
-			double newBalance = this.balance - amount;
+			double balance = this.balance - amount;
 
 			// If the resulting balance will be above or equal to the set overdraft limit...
-			if (newBalance >= (0 - this.overdraftAmount)) {
+			if (balance >= (0 - this.overdraftAmount)) {
 
 				// Withdraw the amount
-				this.balance = newBalance;
-				System.out.println("Your new balance is $" + Double.toString(newBalance));
+				this.balance = balance;
+				System.out.println("Your new balance is $" + Double.toString(balance));
 
 			} else {
 
@@ -136,17 +137,27 @@ public class BankAccount {
 	}// End of setOverdraftAmount method
 
 	/**
-	 * Returns a copy of customer information
+	 * Returns a copy of customer information.
 	 *
-	 * @return copy A copy customer information
+	 * @return A copy customer information.
 	 */
-	public Customer getCustomer(){
-		
-		//keep customer information secure
-		Customer copy = new Customer(customer);
+	public Customer getCustomer() {
 
+		// Keep customer information secure by returning a copy of the private customer
+		// object.
+		Customer copy = new Customer(customer);
 		return copy;
 
-	}//End of getCustomer method
+	}// End of getCustomer method
+
+	/**
+	 * Ties a customer object to the bank account.
+	 * 
+	 * @param customer
+	 *            The customer object to tie to the bank account.
+	 */
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 
 }// End of BankAccount class
