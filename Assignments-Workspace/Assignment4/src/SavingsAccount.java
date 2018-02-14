@@ -104,7 +104,7 @@ public class SavingsAccount extends BankAccount {
 		// then divide by 100 to get to a 0 - 1 range.
 		double monthlyMultiplier = this.annualInterestRate / 12.0 / 100.0;
 
-		// Deposit the new amount
+		// Deposit the earned interest
 		this.deposit(this.getBalance() * monthlyMultiplier);
 
 	}// End of depositMonthlyInterest
@@ -118,7 +118,7 @@ public class SavingsAccount extends BankAccount {
 
 		return annualInterestRate;
 
-	}
+	}// End of getAnnualInterestRate
 
 	/**
 	 * Sets the annual interest rate.
@@ -132,6 +132,6 @@ public class SavingsAccount extends BankAccount {
 			this.annualInterestRate = annualInterestRate;
 		}
 
-	}
+	}// End of setAnnualInterestRate
 
 }

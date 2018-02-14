@@ -4,7 +4,7 @@
  * overdraft amount, deposit, and withdraw, as well as tie a Customer object to
  * it.
  * 
- * @version 2.2.1
+ * @version 2.3.0
  * @author T07
  */
 public class BankAccount {
@@ -150,8 +150,8 @@ public class BankAccount {
 	 */
 	public void setOverdraftAmount(double amount) {
 
-		// If the amount is at least 0...
-		if (amount >= 0) {
+		// If the amount is at least 0 and isn't smaller than a negative balance...
+		if (amount >= 0 && this.balance + amount >= 0) {
 
 			// Set the amount
 			this.overdraftAmount = amount;
