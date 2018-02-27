@@ -9,12 +9,28 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+
+/**
+ * This class represents a the GUI for the bank application. It is meant to
+ * be used in conjunction with the BankAcount class to tie people with their
+ * bank accounts.
+ * 
+ * @version 1.1.1
+ * @author T07
+ * @see BankAccount
+ */
+
 public class BankApplication extends Application{
 
-	
+	/**
+	 * Create the customer and savingsAccount objects
+	 */
 	private Customer customer = new Customer("John Smith", 458796);
 	private SavingsAccount savings = new SavingsAccount(customer, 150);
 	
+	/**
+	 * Strings for the labels
+	 */
 	String customerName = customer.getName();
 	String customerNameLabelText = "Customer name: " + customerName;
 	
@@ -26,23 +42,40 @@ public class BankApplication extends Application{
 	String balanceString = Double.toString(balance);
 	String balanceLabelText = "Current balance: $" + balanceString;
 	
-	
+	/**
+	 * Creating label objects
+	 */
 	Label customerNameLabel = new Label(customerNameLabelText);
 	Label customerIDLabel = new Label(customerIDLabelText);
 	Label balanceLabel = new Label(balanceLabelText);
 	
+	/**
+	 * Creating text field objects
+	 */
 	TextField depositTextField = new TextField("Amt to deposit");
 	TextField withdrawTextField = new TextField("Amt to withdraw");
 	
+	/**
+	 * Creating a button object
+	 */
 	Button executeButton = new Button("Execute");
 	
-   public static void main(String[] args)
-   {
-      Application.launch(args);
-   }
 	
-	public void start(Stage primaryStage) throws Exception {
+	/**
+	 * Main Function
+	 */
+	public static void main(String[] args) {
+		Application.launch(args);
+	}
+	
+	/**
+	 * Main Loop
+	 */
+	public static void start(Stage primaryStage) throws Exception {
 		
+		/**
+		 * Adding the control objects onto the GUI
+		 */
 		
 		VBox root = new VBox();
 		
@@ -57,7 +90,12 @@ public class BankApplication extends Application{
 		root.getChildren().add(texts);
 		
 		executeButton.setOnAction(new EventHandler<ActionEvent>() {
-			
+			/**
+			 * @Override
+			 * Error Trapping possible values for depositing and
+			 * withdrawing money
+			 * Updates customer's balance
+			 */
 			@Override
 			public void handle(ActionEvent event) {
 				
@@ -80,6 +118,9 @@ public class BankApplication extends Application{
 					
 					
 				}
+				/**
+				 * Resets text fields if error
+				 */
 				finally {
 					depositTextField.setText("Amt to deposit");
 					withdrawTextField.setText("Amt to withdraw");	
