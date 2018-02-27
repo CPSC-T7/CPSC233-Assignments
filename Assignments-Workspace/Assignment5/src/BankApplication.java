@@ -9,7 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public abstract class BankApplication extends Application{
+public class BankApplication extends Application{
 
 	
 	private Customer customer = new Customer("John Smith", 458796);
@@ -36,7 +36,13 @@ public abstract class BankApplication extends Application{
 	
 	Button executeButton = new Button("Execute");
 	
+   public static void main(String[] args)
+   {
+      Application.launch(args);
+   }
+	
 	public void start(Stage primaryStage) throws Exception {
+		
 		
 		VBox root = new VBox();
 		
