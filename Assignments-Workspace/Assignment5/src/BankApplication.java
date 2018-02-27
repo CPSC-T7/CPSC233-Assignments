@@ -9,6 +9,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * This class is a graphical interface for a bank account with an attached
+ * customer and savings account. The user is able to see the customer's name, ID
+ * number, and balance, and can deposit and/or withdraw money from the account.
+ * 
+ * @author T7
+ * @version 1.0
+ *
+ */
 public class BankApplication extends Application {
 	
 	/*
