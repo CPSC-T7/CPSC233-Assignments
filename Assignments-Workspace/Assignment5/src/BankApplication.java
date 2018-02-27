@@ -95,6 +95,7 @@ public class BankApplication extends Application{
 			 * Error Trapping possible values for depositing and
 			 * withdrawing money
 			 * Updates customer's balance
+			 * Resets text fields after completion
 			 */
 			@Override
 			public void handle(ActionEvent event) {
@@ -119,7 +120,7 @@ public class BankApplication extends Application{
 					
 				}
 				/**
-				 * Resets text fields if error
+				 * Resets text fields only if error
 				 */
 				finally {
 					depositTextField.setText("Amt to deposit");
