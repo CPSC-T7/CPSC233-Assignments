@@ -9,141 +9,163 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-
 /**
- * This class represents a the GUI for the bank application. It is meant to
- * be used in conjunction with the BankAcount class to tie people with their
- * bank accounts.
+ * This class represents a the GUI for the bank application. It is meant to be
+ * used in conjunction with the BankAcount class to tie people with their bank
+ * accounts. <br>
+ * When run, the user is presented with an interface showing the customer name,
+ * ID number, and balance, as well as two text fields: One for an amount to
+ * deposit, and one for an amount to withdraw. There is a button below this
+ * which, when pressed, deposits and/or withdraws the specified amount(s) from
+ * the attached savings account.
  * 
- * @version 1.1.1
+ * @version 1.2
  * @author T07
  * @see BankAccount
  */
-
-public class BankApplication extends Application{
-
-	/**
-	 * Create the customer and savingsAccount objects
+public class BankApplication extends Application {
+	
+	/*
+	 * 
+	 * INSTANCE VARIABLES
+	 * 
 	 */
-	private Customer customer = new Customer("John Smith", 458796);
-	private SavingsAccount savings = new SavingsAccount(customer, 150);
 	
-	/**
-	 * Strings for the labels
+	private final int		VBOX_PADDING			= 10;
+	private final int		HBOX_PADDING			= 10;
+	
+	private final String	DEPOSIT_DEFAULT_TEXT	= "Deposit";
+	private final String	WITHDRAW_DEFAULT_TEXT	= "Withdraw";
+	private final String	EXECUTE_BUTTON_TEXT		= "Execute";
+	
+	private Customer		customer				= new Customer("John Smith", 458796);
+	private SavingsAccount	savingsAccount			= new SavingsAccount(customer, 150);
+	
+	private String			nameLabelText			= "Customer Name: " + customer.getName();
+	private String			IDLabelText				= "Account ID: " + Integer.toString(customer.getID());
+	private String			balanceLabelText		= "Current Balance: $" + Double.toString(savingsAccount.getBalance());
+	
+	// GUI Elements
+	
+	private Label			customerNameLabel		= new Label(nameLabelText);
+	private Label			customerIDLabel			= new Label(IDLabelText);
+	private Label			balanceLabel			= new Label(balanceLabelText);
+	
+	private TextField		depositTextField		= new TextField(DEPOSIT_DEFAULT_TEXT);
+	private TextField		withdrawTextField		= new TextField(WITHDRAW_DEFAULT_TEXT);
+	
+	private Button			executeButton			= new Button(EXECUTE_BUTTON_TEXT);
+	
+	/*
+	 * 
+	 * METHODS
+	 * 
 	 */
-	String customerName = customer.getName();
-	String customerNameLabelText = "Customer name: " + customerName;
-	
-	int customerID = customer.getID();
-	String customerIDString = Integer.toString(customerID);
-	String customerIDLabelText = "Account ID: " + customerIDString;
-	
-	double balance = savings.getBalance();
-	String balanceString = Double.toString(balance);
-	String balanceLabelText = "Current balance: $" + balanceString;
 	
 	/**
-	 * Creating label objects
-	 */
-	Label customerNameLabel = new Label(customerNameLabelText);
-	Label customerIDLabel = new Label(customerIDLabelText);
-	Label balanceLabel = new Label(balanceLabelText);
-	
-	/**
-	 * Creating text field objects
-	 */
-	TextField depositTextField = new TextField("Amt to deposit");
-	TextField withdrawTextField = new TextField("Amt to withdraw");
-	
-	/**
-	 * Creating a button object
-	 */
-	Button executeButton = new Button("Execute");
-	
-	
-	/**
-	 * Main Function
+	 * Launches the GUI Application.
+	 * 
+	 * @param args
+	 *            Not explicitly used.
 	 */
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
 	
 	/**
-	 * Main Loop
+	 * JavaFX start method.
 	 */
-	public static void start(Stage primaryStage) throws Exception {
+	@Override
+	public void start(Stage primaryStage) throws Exception {
 		
-		/**
-		 * Adding the control objects onto the GUI
+		/*
+		 * GUI Layout:
+		 * 
+		 * Name-Label
+		 * ID-Label
+		 * Deposit-TextField Withdraw-TextField
+		 * Execute-Button
+		 * Balance-Label
 		 */
 		
-		VBox root = new VBox();
+		VBox root = new VBox(VBOX_PADDING);
 		
 		root.getChildren().add(customerNameLabel);
 		root.getChildren().add(customerIDLabel);
 		
-		HBox texts = new HBox();
+		HBox textFileds = new HBox(HBOX_PADDING);
 		
-		texts.getChildren().add(depositTextField);
-		texts.getChildren().add(withdrawTextField);
+		textFileds.getChildren().add(depositTextField);
+		textFileds.getChildren().add(withdrawTextField);
 		
-		root.getChildren().add(texts);
+		root.getChildren().add(textFileds);
 		
+		// Set the button to withdraw and deposit the specified amounts
 		executeButton.setOnAction(new EventHandler<ActionEvent>() {
+			
 			/**
-			 * @Override
-			 * Error Trapping possible values for depositing and
-			 * withdrawing money
-			 * Updates customer's balance
-			 * Resets text fields after completion
+			 * Button handler. <br>
+			 * Deposits and withdraws the amounts in depositTextField and withdrawTextField
+			 * respectively to the linked savings account.
 			 */
 			@Override
 			public void handle(ActionEvent event) {
 				
+				double toDeposit = 0;
+				double toWithdraw = 0;
+				
+				// Try to parse the value in depositTextField to a usable double
 				try {
-					String depositMoney = depositTextField.getText();
-					String withdrawMoney = withdrawTextField.getText();
 					
-					if (!depositMoney.equals("Amt to deposit")) {
-						double depositMoneyD = Double.parseDouble(depositMoney);
-						savings.deposit(depositMoneyD);	
-					}
-					if (!withdrawMoney.equals("Amt to withdraw")) {
-						double withdrawMoneyD = Double.parseDouble(withdrawMoney);
-						savings.withdraw(withdrawMoneyD);
-					}
-					balance = savings.getBalance();
-					balanceString = Double.toString(balance);
-					balanceLabelText = "Current balance: $" + balanceString;
-					balanceLabel.setText(balanceLabelText);
+					toDeposit = Double.parseDouble(depositTextField.getText());
 					
+				} catch (NumberFormatException e) {// If the value isn't a usable double
+					
+					// Only tell the user about bad input if it isn't the default value
+					if (!depositTextField.getText().equals(DEPOSIT_DEFAULT_TEXT)) {
+						System.out.println("Invalid Deposit Value.");
+					}
 					
 				}
-				/**
-				 * Resets text fields only if error
-				 */
-				finally {
-					depositTextField.setText("Amt to deposit");
-					withdrawTextField.setText("Amt to withdraw");	
+				
+				// Try to parse the value in withdrawTextField to a usable double
+				try {
+					
+					toWithdraw = Double.parseDouble(withdrawTextField.getText());
+					
+				} catch (NumberFormatException e) { // If the value isn't a usable double
+					
+					// Only tell the user about bad input if it isn't the default value
+					if (!withdrawTextField.getText().equals(WITHDRAW_DEFAULT_TEXT)) {
+						System.out.println("Invalid Withdraw Value.");
+					}
+					
 				}
-		
+				
+				// Deposit and withdraw the amounts
+				savingsAccount.deposit(toDeposit);
+				savingsAccount.withdraw(toWithdraw);
+				
+				// Update the balance label
+				balanceLabel.setText("Current Balance: $" + Double.toString(savingsAccount.getBalance()));
+				
+				// Reset the text boxes
+				depositTextField.setText(DEPOSIT_DEFAULT_TEXT);
+				withdrawTextField.setText(WITHDRAW_DEFAULT_TEXT);
 				
 			}
+			
 		});
 		
 		root.getChildren().add(executeButton);
 		root.getChildren().add(balanceLabel);
 		
-		Scene scene = new Scene(root, 350, 300);
-		primaryStage.setTitle("Bank application");
+		// Final touches, then draw the window
+		Scene scene = new Scene(root, 350, 150);
+		primaryStage.setTitle("Bank Application");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
-		
 	}
-	
-	
-	
-	
 	
 }

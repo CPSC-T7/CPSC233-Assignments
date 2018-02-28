@@ -86,8 +86,8 @@ public class BankAccount {
 	 */
 	public void deposit(double amount) {
 
-		// If the amount is positive...
-		if (amount > 0) {
+		// If the amount is a reasonable number...
+		if (amount > 0 && amount != Double.POSITIVE_INFINITY) {
 
 			// Deposit the amount into the account
 			this.balance += amount;
@@ -150,8 +150,9 @@ public class BankAccount {
 	 */
 	public void setOverdraftAmount(double amount) {
 
-		// If the amount is at least 0 and isn't smaller than a negative balance...
-		if (amount >= 0 && this.balance + amount >= 0) {
+		// If the amount set will not mean the current balance is overdrafted...
+		// (I know that isn't a word, but you get what I mean :P)
+		if (this.balance + amount >= 0) {
 
 			// Set the amount
 			this.overdraftAmount = amount;
@@ -183,7 +184,5 @@ public class BankAccount {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	
-	
 
 }// End of BankAccount class

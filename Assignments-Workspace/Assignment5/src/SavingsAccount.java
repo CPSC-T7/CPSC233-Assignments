@@ -3,7 +3,7 @@
  * This class represents a savings account; a bank account that is meant for,
  * well, saving.
  * 
- * @version 1.0.1
+ * @version 1.1
  * @author T07
  * @see BankAccount
  */
@@ -127,8 +127,8 @@ public class SavingsAccount extends BankAccount {
 	 */
 	public void setAnnualInterestRate(double annualInterestRate) {
 
-		// Make sure the rate is positive before setting th rate
-		if (annualInterestRate >= 0) {
+		// If the interest rate is a reasonable number...
+		if (annualInterestRate >= 0 && annualInterestRate != Double.POSITIVE_INFINITY) {
 			this.annualInterestRate = annualInterestRate;
 		}
 
