@@ -14,7 +14,7 @@ public class BankAccount {
 	 * 
 	 */
 
-	protected double balance = 0.0;
+	private double balance = 0.0;
 	private Customer customer = new Customer();
 
 	/*
@@ -98,7 +98,7 @@ public class BankAccount {
 
 	/**
 	 * Withdraws a specified amount from the account balance, but will not withdraw
-	 * anything if the resulting balance would be below the set overdraft amount.
+	 * anything if the resulting balance would be below 0.
 	 * 
 	 * @param amount
 	 *            Total amount to withdraw.
@@ -190,5 +190,16 @@ public class BankAccount {
 		}
 
 	}// End of transfer method
+	
+	/**
+	 * Sets the balance of the account.
+	 * 
+	 * @param amount The new account balance.
+	 */
+	protected void setBalance(double amount) {
+		
+		this.balance = amount;
+		
+	}// End of setBalance method
 
 }// End of BankAccount class
