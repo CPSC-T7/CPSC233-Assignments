@@ -93,7 +93,7 @@ public class SavingsAccount extends BankAccount {
 	 */
 
 	/**
-	 * Deposits the ammount earned via interest from a monthly compound period. <br>
+	 * Deposits the amount earned via interest from a monthly compound period. <br>
 	 * As far as I can tell (Matt), this doesn't seem to be tested in
 	 * SavingsAccountTest.java
 	 */
@@ -123,7 +123,8 @@ public class SavingsAccount extends BankAccount {
 	/**
 	 * Sets the annual interest rate.
 	 * 
-	 * @param annualInterestRate The new annual interest rate.
+	 * @param annualInterestRate
+	 *            The new annual interest rate.
 	 */
 	public void setAnnualInterestRate(double annualInterestRate) {
 
@@ -134,21 +135,23 @@ public class SavingsAccount extends BankAccount {
 
 	}// End of setAnnualInterestRate
 
+	// JavaDoc set by parent.
 	@Override
 	protected double getMonthlyFeesAndInterest() {
-		
-		//Initialize the monthly fee to 0
+
+		// Initialize the monthly fee to 0
 		double fee = 0;
-		
-		//If the balance is less than 1000, change the fee to 5 dollars
-		if(this.getBalance() < 1000) {
-			
+
+		// If the balance is less than 1000, change the fee to 5 dollars
+		if (this.getBalance() < 1000) {
+
 			fee = 5;
 		}
-		
-		//Return the 1/12 of annual interest rate times the balance and subtract the fees
-		return (1.0/12.0)*(this.getAnnualInterestRate()/100)*this.getBalance() - fee;
 
-	}//End of getMonthlyFeesAndInterest method 
+		// Return the 1/12 of annual interest rate times the balance and subtract the
+		// fees
+		return (1.0 / 12.0) * (this.getAnnualInterestRate() / 100) * this.getBalance() - fee;
+
+	}// End of getMonthlyFeesAndInterest method
 
 }

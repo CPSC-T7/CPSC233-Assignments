@@ -81,10 +81,7 @@ public class BankApplication extends Application {
 		/*
 		 * GUI Layout:
 		 * 
-		 * Name-Label
-		 * ID-Label
-		 * Deposit-TextField Withdraw-TextField
-		 * Execute-Button
+		 * Name-Label ID-Label Deposit-TextField Withdraw-TextField Execute-Button
 		 * Balance-Label
 		 */
 		

@@ -28,7 +28,7 @@ public class ChequingAccount extends BankAccount {
 		super();
 		this.setOverdraftFee(overdraftFee);
 
-	}
+	} // End of constructor
 
 	/**
 	 * Creates a new chequing account with an customer, starting balance, and
@@ -47,7 +47,7 @@ public class ChequingAccount extends BankAccount {
 		super(customer, startingBalance);
 		this.setOverdraftFee(overdraftFee);
 
-	}
+	} // End of constructor
 
 	/*
 	 * 
@@ -72,7 +72,7 @@ public class ChequingAccount extends BankAccount {
 
 		}
 
-	}
+	} // End of setOverdraftAmount method
 
 	/**
 	 * Returns the overdraft amount.
@@ -83,7 +83,7 @@ public class ChequingAccount extends BankAccount {
 		
 		return this.overdraftAmount;
 		
-	}
+	} // End of getOverdraftAmount method
 
 	/**
 	 * Returns the overdraft fee.
@@ -94,7 +94,7 @@ public class ChequingAccount extends BankAccount {
 		
 		return overdraftFee;
 		
-	}
+	} // End of getOverdraftFee method
 
 	/**
 	 * Sets the overdraft fee.
@@ -108,7 +108,7 @@ public class ChequingAccount extends BankAccount {
 			this.overdraftFee = overdraftFee;
 		}
 		
-	}
+	} // End of setOverdraftFee method
 
 	/**
 	 * Withdraws a specified amount from the account balance, but will not withdraw
@@ -148,9 +148,9 @@ public class ChequingAccount extends BankAccount {
 
 		}
 
-	}
+	} // End of withdraw method
 
-	
+	// JavaDoc set by parent.
 	@Override
 	protected double getMonthlyFeesAndInterest() {
 		
