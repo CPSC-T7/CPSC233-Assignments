@@ -150,14 +150,24 @@ public class ChequingAccount extends BankAccount {
 
 	}
 
+	
 	@Override
 	protected double getMonthlyFeesAndInterest() {
+		
+		//If the balance is positive return 0
 		if(this.getBalance() >= 0) {
+			
 			return 0;
+			
 		}
+		
+		//Otherwise return 20% of the negative balance
 		else {
+			
 			return (0.20*this.getBalance());
+			
 		}
-	}
+		
+	}// End of monthEndUpdate method
 
 }
