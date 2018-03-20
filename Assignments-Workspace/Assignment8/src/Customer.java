@@ -4,7 +4,7 @@
  * be used in conjunction with the BankAcount class to tie people with their
  * bank accounts.
  * 
- * @version 1.1.1
+ * @version 1.2
  * @author T07
  * @see BankAccount
  */
@@ -38,7 +38,7 @@ public class Customer {
 	Customer(String name, int id) {
 		
 		// Initialize name and id as provided
-		this.name = name;
+		this.name = new String(name);
 		this.id = id;
 		
 	}// End of copy constructor
@@ -80,30 +80,6 @@ public class Customer {
 		return this.id;
 		
 	}// End of getID method
-	
-	/**
-	 * Set customer name.
-	 * 
-	 * @param newName
-	 *            Name to replace current customer name with.
-	 */
-	public void setName(String newName) {
-		
-		this.name = newName;
-		
-	}// End of setName method
-	
-	/**
-	 * Set customer ID.
-	 * 
-	 * @param newID
-	 *            Customer ID number to replace current ID number with.
-	 */
-	public void setID(int newID) {
-		
-		this.id = newID;
-		
-	}// End of setID method
 	
 	/**
 	 * Returns all customer information.

@@ -1,0 +1,3 @@
+The reason we don't need to worry about privacy leaks of accountHoler in BankAccount is that accountHolder is of Customer type, 
+and a Customer is now an immutable object. This means that even if a private reference to accountHolder is obtained by another class, 
+it won't matter because once the Customer object is created, it cannot be changed by anything.
