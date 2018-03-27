@@ -1,3 +1,9 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -8,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * This class represents a the GUI for the bank application. It is meant to be
@@ -157,11 +164,34 @@ public class BankApplication extends Application {
 		root.getChildren().add(executeButton);
 		root.getChildren().add(balanceLabel);
 		
+		// Close event
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+			@Override
+			public void handle(WindowEvent event) {
+
+				BankAccount.saveBankInfo();
+				
+			}
+			
+			
+		});
+		
 		// Final touches, then draw the window
 		Scene scene = new Scene(root, 350, 150);
 		primaryStage.setTitle("Bank Application");
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		
+	}
+	
+	private static void saveBankInfo() {
+		
+		try {
+			BufferedWriter bWriter = new BufferedWriter(new FileWriter( new File("POTATO.txt")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
