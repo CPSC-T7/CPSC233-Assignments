@@ -2,10 +2,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+   @SuppressWarnings("static-access")
 public class SavingsAccountTest
 {
 
-    @Test
+	@Test
     public void test_getMonthlyFeesAndInterestLowBalance()
     {
         SavingsAccount s = new SavingsAccount();

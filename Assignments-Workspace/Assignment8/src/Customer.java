@@ -8,7 +8,7 @@
  * @author T07
  * @see BankAccount
  */
-public class Customer {
+public final class Customer {
 	
 	// INSTANCE VARIABLES
 	
