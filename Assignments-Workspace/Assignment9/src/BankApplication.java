@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -56,12 +57,7 @@ public class BankApplication extends Application {
 	private Customer		customer;
 	private BankAccount		bankAccount;
 	
-	// TODO: READ / MAKE DATA
-	
-	private String			nameLabelText			= "Customer Name: " + bankAccount.getCustomer().getName();
-	private String			IDLabelText				= "Account ID: "
-			+ Integer.toString(bankAccount.getCustomer().getID());
-	private String			balanceLabelText		= "Current Balance: $" + Double.toString(bankAccount.getBalance());
+	private boolean 		hasAccount			;
 	
 	private String 			askNameLabelText 		= "Please enter your name.";
 	private String			askAccountTypeText		= "Which type of account would you like to open?";
@@ -69,9 +65,9 @@ public class BankApplication extends Application {
 	// GUI Elements
 	
 	//Existing Account
-	private Label			customerNameLabel		= new Label(nameLabelText);
-	private Label			customerIDLabel			= new Label(IDLabelText);
-	private Label			balanceLabel			= new Label(balanceLabelText);
+	private Label			customerNameLabel		= new Label("Empty");
+	private Label			customerIDLabel			= new Label("Empty");
+	private Label			balanceLabel			= new Label("$0.0");
 	
 	private TextField		depositTextField		= new TextField(DEPOSIT_DEFAULT_TEXT);
 	private TextField		withdrawTextField		= new TextField(WITHDRAW_DEFAULT_TEXT);
@@ -85,6 +81,28 @@ public class BankApplication extends Application {
 	private Label 			askAccountTypeLabel	= new Label(askAccountTypeText);
 	
 	private Button			finishAccountButton			= new Button(FINISH_DEFAULT_TEXT);	
+	
+	/*
+	 * 
+	 * CONSTRUCTOR
+	 * 
+	 */
+	
+	public BankApplication() {
+		//If an account exists: read from the file.
+		if (new File(INFO_FILE_NAME).isFile()) {
+			hasAccount = true;
+			getBankInfo();
+			
+			//Set the customer name/ID labels
+			customerNameLabel.setText(customer.getName());
+			customerIDLabel.setText(Integer.toString(customer.getID()));
+			balanceLabel.setText("Current Balance: $" + Double.toString(bankAccount.getBalance()));
+			
+		}else { //If no accounts exist: create a new file
+			hasAccount = false;
+		}
+	}
 	
 	/*
 	 * 
@@ -157,10 +175,12 @@ public class BankApplication extends Application {
 		final ToggleGroup radioButtonGroup = new ToggleGroup();
 		
 		RadioButton radioChequing = new RadioButton("Chequing");
+		radioChequing.setUserData("Chequing");
 		radioChequing.setToggleGroup(radioButtonGroup);
 		radioChequing.setSelected(true);
 		
 		RadioButton radioSavings = new RadioButton("Savings");
+		radioSavings.setUserData("Savings");
 		radioSavings.setToggleGroup(radioButtonGroup);
 		newCustomerAccountTypeHBox.getChildren().addAll(radioChequing, radioSavings);
 		newAccountVBox.getChildren().add(newCustomerAccountTypeHBox);
@@ -176,17 +196,71 @@ public class BankApplication extends Application {
 		
 		// Draw the window
 		primaryStage.setTitle("Bank Application");
-		//primaryStage.setScene(depositWithdrawScene);
-		primaryStage.setScene(newAccountScene);
+		
+		//Set the scene depending on whether there is an account or not
+		if (hasAccount == true) {
+			
+			primaryStage.setScene(depositWithdrawScene);
+			
+		}else {
+			
+			primaryStage.setScene(newAccountScene);
+		
+		}
 		primaryStage.show();
 		
 		// Set the button to withdraw and deposit the specified amounts
-		executeButton.setOnAction(new EventHandler<ActionEvent>() {
+		finishAccountButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			/**
 			 * Button handler. <br>
 			 * Deposits and withdraws the amounts in depositTextField and withdrawTextField
 			 * respectively to the linked savings account.
+			 */
+			@Override
+			public void handle(ActionEvent event) {
+
+				//Get the customer's name from the TextField
+				String customerName 		= customerNameTextField.getText();
+				
+				//Set the customer's ID randomly
+				int customerID 			= ThreadLocalRandom.current().nextInt(1000, 10000);
+				
+				//Create the customer object
+				customer = new Customer(customerName, customerID);
+				
+				// Create the customers account based on the radio button selection
+				String customerAccountType 	= radioButtonGroup.getSelectedToggle().getUserData().toString();
+				
+				if (customerAccountType == "Chequing") {
+					bankAccount = new ChequingAccount(customer);
+					
+				}else {
+					bankAccount = new SavingsAccount(customer);
+					
+				}
+				
+				//Save the users info to a file
+				saveBankInfo();
+				
+				//Change the scene to deposit/withdraw from the account
+				primaryStage.setScene(depositWithdrawScene);
+				
+				//Set the customer name/ID labels
+				customerNameLabel.setText(customerName);
+				customerIDLabel.setText(Integer.toString(customerID));
+				
+			}
+			
+		});
+		
+		// Set the button to finish creating a new account
+		executeButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			/**
+			 * Button handler.
+			 * Creates a new account from the information given by
+			 * the new customer.
 			 */
 			@Override
 			public void handle(ActionEvent event) {
@@ -233,6 +307,9 @@ public class BankApplication extends Application {
 				depositTextField.setText(DEPOSIT_DEFAULT_TEXT);
 				withdrawTextField.setText(WITHDRAW_DEFAULT_TEXT);
 				
+				//Save the changes to file
+				saveBankInfo();
+				
 			}
 			
 		});
@@ -260,11 +337,13 @@ public class BankApplication extends Application {
 				data.add("C");
 				data.add(Double.toString(((ChequingAccount) this.bankAccount).getOverdraftAmount()));
 				data.add(Double.toString(((ChequingAccount) this.bankAccount).getOverdraftFee()));
+				data.add(Double.toString(((ChequingAccount) this.bankAccount).getBalance()));
 				
 			} else if (this.bankAccount instanceof SavingsAccount) {
 				
 				data.add("S");
 				data.add(Double.toString(((SavingsAccount) this.bankAccount).getAnnualInterestRate()));
+				data.add(Double.toString(((SavingsAccount) this.bankAccount).getBalance()));
 				
 			}
 			
@@ -296,17 +375,24 @@ public class BankApplication extends Application {
 			String customerName = data[0];
 			int customerID = Integer.parseInt(data[1]);
 			
+			//Create the customer
+			this.customer = new Customer(customerName, customerID);
+			
 			// Grab and set the account info
 			if (data[2].equals("C")) {
 				
-				ChequingAccount account = new ChequingAccount(new Customer(customerName, customerID));
-				account.setOverdraftAmount(Integer.parseInt(data[3]));
-				account.setOverdraftFee(Integer.parseInt(data[4]));
+				ChequingAccount account = new ChequingAccount(this.customer);
+				account.setOverdraftAmount(Double.parseDouble(data[3]));
+				account.setOverdraftFee(Double.parseDouble(data[4]));
+				account.setBalance(Double.parseDouble(data[5]));
+				this.bankAccount = account;
 				
 			} else if (data[2].equals("S")) {
 				
-				SavingsAccount account = new SavingsAccount(new Customer(customerName, customerID));
-				account.setAnnualInterestRate(Integer.parseInt(data[3]));
+				SavingsAccount account = new SavingsAccount(this.customer);
+				account.setAnnualInterestRate(Double.parseDouble(data[3]));
+				account.setBalance(Double.parseDouble(data[4]));
+				this.bankAccount = account;
 				
 			}
 			
