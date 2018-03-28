@@ -10,7 +10,9 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -44,6 +46,8 @@ public class BankApplication extends Application {
 	private final String	DEPOSIT_DEFAULT_TEXT	= "Deposit";
 	private final String	WITHDRAW_DEFAULT_TEXT	= "Withdraw";
 	private final String	EXECUTE_BUTTON_TEXT		= "Execute";
+	private final String	NAME_DEFAULT_TEXT		= "Name";
+	private final String 	FINISH_DEFAULT_TEXT		= "Finish";
 	
 	private Customer		customer				= new Customer("John Smith", 458796);
 	private SavingsAccount	savingsAccount			= new SavingsAccount(customer, 150);
@@ -52,8 +56,12 @@ public class BankApplication extends Application {
 	private String			IDLabelText				= "Account ID: " + Integer.toString(savingsAccount.getCustomer().getID());
 	private String			balanceLabelText		= "Current Balance: $" + Double.toString(savingsAccount.getBalance());
 	
+	private String 			askNameLabelText 		= "Please enter your name.";
+	private String			askAccountTypeText		= "Which type of account would you like to open?";
+	
 	// GUI Elements
 	
+	//Existing Account
 	private Label			customerNameLabel		= new Label(nameLabelText);
 	private Label			customerIDLabel			= new Label(IDLabelText);
 	private Label			balanceLabel			= new Label(balanceLabelText);
@@ -61,7 +69,15 @@ public class BankApplication extends Application {
 	private TextField		depositTextField		= new TextField(DEPOSIT_DEFAULT_TEXT);
 	private TextField		withdrawTextField		= new TextField(WITHDRAW_DEFAULT_TEXT);
 	
-	private Button			executeButton			= new Button(EXECUTE_BUTTON_TEXT);
+	private Button			executeButton			= new Button(EXECUTE_BUTTON_TEXT);	
+	
+	//New Account
+	private Label 			askForNameLabel			= new Label(askNameLabelText);
+	private TextField		customerNameTextField	= new TextField(NAME_DEFAULT_TEXT);
+	
+	private Label 			askAccountTypeLabel	= new Label(askAccountTypeText);
+	
+	private Button			finishAccountButton			= new Button(FINISH_DEFAULT_TEXT);	
 	
 	/*
 	 * 
@@ -86,23 +102,76 @@ public class BankApplication extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		
 		/*
-		 * GUI Layout:
+		 * GUI layout for a created account:
 		 * 
 		 * Name-Label ID-Label Deposit-TextField Withdraw-TextField Execute-Button
 		 * Balance-Label
 		 */
 		
-		VBox root = new VBox(VBOX_PADDING);
+		VBox depositWithdrawVBox = new VBox(VBOX_PADDING);
 		
-		root.getChildren().add(customerNameLabel);
-		root.getChildren().add(customerIDLabel);
+		depositWithdrawVBox.getChildren().add(customerNameLabel);
+		depositWithdrawVBox.getChildren().add(customerIDLabel);
 		
-		HBox textFileds = new HBox(HBOX_PADDING);
+		HBox depositWithdrawHBox = new HBox(HBOX_PADDING);
 		
-		textFileds.getChildren().add(depositTextField);
-		textFileds.getChildren().add(withdrawTextField);
+		depositWithdrawHBox.getChildren().add(depositTextField);
+		depositWithdrawHBox.getChildren().add(withdrawTextField);
 		
-		root.getChildren().add(textFileds);
+		depositWithdrawVBox.getChildren().add(depositWithdrawHBox);		
+		
+		depositWithdrawVBox.getChildren().add(executeButton);
+		depositWithdrawVBox.getChildren().add(balanceLabel);
+		
+		//New scene for deposit withdraw
+		Scene depositWithdrawScene = new Scene(depositWithdrawVBox, 350, 150);
+		
+		
+		/*
+		 * GUI layout for a new account:
+		 * 
+		 * Name-Label ID-Label Deposit-TextField Withdraw-TextField Execute-Button
+		 * Balance-Label
+		 */
+		
+		VBox newAccountVBox = new VBox(VBOX_PADDING);
+		
+		newAccountVBox.getChildren().add(askForNameLabel);
+		
+		HBox newCustomerNameHBox = new HBox(HBOX_PADDING);
+		newCustomerNameHBox.getChildren().add(customerNameTextField);
+		newAccountVBox.getChildren().add(newCustomerNameHBox);
+		
+		newAccountVBox.getChildren().add(askAccountTypeLabel);
+		
+		//Account Type Radio Buttons
+		HBox newCustomerAccountTypeHBox = new HBox(HBOX_PADDING);
+		
+		final ToggleGroup radioButtonGroup = new ToggleGroup();
+		
+		RadioButton radioChequing = new RadioButton("Chequing");
+		radioChequing.setToggleGroup(radioButtonGroup);
+		radioChequing.setSelected(true);
+		
+		RadioButton radioSavings = new RadioButton("Savings");
+		radioSavings.setToggleGroup(radioButtonGroup);
+		newCustomerAccountTypeHBox.getChildren().addAll(radioChequing, radioSavings);
+		newAccountVBox.getChildren().add(newCustomerAccountTypeHBox);
+		
+		//Finish creating account button
+		newAccountVBox.getChildren().add(finishAccountButton);
+		
+		
+		
+		//New scene for making a new account
+		Scene newAccountScene = new Scene(newAccountVBox, 350, 150);
+		
+		
+		// Draw the window
+		primaryStage.setTitle("Bank Application");
+		//primaryStage.setScene(depositWithdrawScene);
+		primaryStage.setScene(newAccountScene);
+		primaryStage.show();
 		
 		// Set the button to withdraw and deposit the specified amounts
 		executeButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -161,8 +230,7 @@ public class BankApplication extends Application {
 			
 		});
 		
-		root.getChildren().add(executeButton);
-		root.getChildren().add(balanceLabel);
+
 		
 		// Close event
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -170,18 +238,14 @@ public class BankApplication extends Application {
 			@Override
 			public void handle(WindowEvent event) {
 
-				BankAccount.saveBankInfo();
+				//BankAccount.saveBankInfo();
 				
 			}
 			
 			
 		});
 		
-		// Final touches, then draw the window
-		Scene scene = new Scene(root, 350, 150);
-		primaryStage.setTitle("Bank Application");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+
 		
 	}
 	
