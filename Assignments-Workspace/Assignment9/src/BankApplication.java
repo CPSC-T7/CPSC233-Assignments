@@ -235,33 +235,24 @@ public class BankApplication extends Application {
 			
 		});
 		
-
-		
-		// Close event
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			
-			@Override
-			public void handle(WindowEvent event) {
-
-				BankApplication.saveBankInfo();
-				
-			}
-			
-		});
-		
-
-		
 	}
 	
+	/**
+	 * Saves the current bank account and customer info to a text file.
+	 */
 	private void saveBankInfo() {
 		
+		// Open the file
 		try (BufferedWriter bWriter = new BufferedWriter(new FileWriter(new File(INFO_FILE_NAME)))) {
 			
+			//Data Holder
 			ArrayList<String> data = new ArrayList<String>();
+			
+			// Grab the customer info
 			data.add(this.customer.getName());
 			data.add(Integer.toString(this.customer.getID()));
-			// data.add(this.bankAccount instanceof ChequingAccount ? "C" : "S");
 			
+			// Grab the account info
 			if (this.bankAccount instanceof ChequingAccount) {
 				
 				data.add("C");
@@ -275,27 +266,35 @@ public class BankApplication extends Application {
 				
 			}
 			
+			// Write the data to the text file
 			bWriter.write(String.join(",", data));
 			
 		} catch (IOException e) {
 			
-			System.out.println("Error reading file [" + INFO_FILE_NAME + "]. I/O Exception! on write");
+			System.out.println("Error reading file [" + INFO_FILE_NAME + "]. I/O Exception on write!");
 			e.printStackTrace();
 			
 		}
 		
 	}
 	
+	/**
+	 * Loads the current bank account and customer info from a text file.
+	 */
 	@SuppressWarnings("static-access")
 	private void getBankInfo() {
 		
+		// Open the file
 		try (BufferedReader bReader = new BufferedReader(new FileReader(new File(INFO_FILE_NAME)))) {
 			
+			//Data Holder
 			String[] data = bReader.readLine().split(",");
 			
+			// Grab the customer info
 			String customerName = data[0];
 			int customerID = Integer.parseInt(data[1]);
 			
+			// Grab and set the account info
 			if (data[2].equals("C")) {
 				
 				ChequingAccount account = new ChequingAccount(new Customer(customerName, customerID));
