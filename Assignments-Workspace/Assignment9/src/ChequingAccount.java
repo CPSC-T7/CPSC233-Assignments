@@ -48,6 +48,18 @@ public class ChequingAccount extends BankAccount {
 		this.setOverdraftFee(overdraftFee);
 
 	} // End of constructor
+	
+	/**
+	 * Creates a new chequing account with an customer.
+	 * 
+	 * @param customer
+	 *            The customer to tie to the bank account.
+	 */
+	public ChequingAccount(Customer customer) {
+
+		super(customer);
+
+	} // End of constructor
 
 	/*
 	 * 

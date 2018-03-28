@@ -1,8 +1,10 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -45,12 +47,15 @@ public class BankApplication extends Application {
 	private final String	WITHDRAW_DEFAULT_TEXT	= "Withdraw";
 	private final String	EXECUTE_BUTTON_TEXT		= "Execute";
 	
-	private Customer		customer				= new Customer("John Smith", 458796);
-	private SavingsAccount	savingsAccount			= new SavingsAccount(customer, 150);
+	private final String	INFO_FILE_NAME			= "BankAccountData.txt";
 	
-	private String			nameLabelText			= "Customer Name: " + savingsAccount.getCustomer().getName();
-	private String			IDLabelText				= "Account ID: " + Integer.toString(savingsAccount.getCustomer().getID());
-	private String			balanceLabelText		= "Current Balance: $" + Double.toString(savingsAccount.getBalance());
+	private Customer		customer;
+	private BankAccount		bankAccount;
+	
+	private String			nameLabelText			= "Customer Name: " + bankAccount.getCustomer().getName();
+	private String			IDLabelText				= "Account ID: "
+			+ Integer.toString(bankAccount.getCustomer().getID());
+	private String			balanceLabelText		= "Current Balance: $" + Double.toString(bankAccount.getBalance());
 	
 	// GUI Elements
 	
@@ -147,11 +152,11 @@ public class BankApplication extends Application {
 				}
 				
 				// Deposit and withdraw the amounts
-				savingsAccount.deposit(toDeposit);
-				savingsAccount.withdraw(toWithdraw);
+				bankAccount.deposit(toDeposit);
+				bankAccount.withdraw(toWithdraw);
 				
 				// Update the balance label
-				balanceLabel.setText("Current Balance: $" + Double.toString(savingsAccount.getBalance()));
+				balanceLabel.setText("Current Balance: $" + Double.toString(bankAccount.getBalance()));
 				
 				// Reset the text boxes
 				depositTextField.setText(DEPOSIT_DEFAULT_TEXT);
@@ -166,14 +171,13 @@ public class BankApplication extends Application {
 		
 		// Close event
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-
+			
 			@Override
 			public void handle(WindowEvent event) {
-
-				BankAccount.saveBankInfo();
+				
+				// BankApplication.saveBankInfo();
 				
 			}
-			
 			
 		});
 		
@@ -185,12 +189,67 @@ public class BankApplication extends Application {
 		
 	}
 	
-	private static void saveBankInfo() {
+	private void saveBankInfo() {
 		
-		try {
-			BufferedWriter bWriter = new BufferedWriter(new FileWriter( new File("POTATO.txt")));
+		try (BufferedWriter bWriter = new BufferedWriter(new FileWriter(new File(INFO_FILE_NAME)))) {
+			
+			ArrayList<String> data = new ArrayList<String>();
+			data.add(this.customer.getName());
+			data.add(Integer.toString(this.customer.getID()));
+			// data.add(this.bankAccount instanceof ChequingAccount ? "C" : "S");
+			
+			if (this.bankAccount instanceof ChequingAccount) {
+				
+				data.add("C");
+				data.add(Double.toString(((ChequingAccount) this.bankAccount).getOverdraftAmount()));
+				data.add(Double.toString(((ChequingAccount) this.bankAccount).getOverdraftFee()));
+				
+			} else if (this.bankAccount instanceof SavingsAccount) {
+				
+				data.add("S");
+				data.add(Double.toString(((SavingsAccount) this.bankAccount).getAnnualInterestRate()));
+				
+			}
+			
+			bWriter.write(String.join(",", data));
+			
 		} catch (IOException e) {
+			
+			System.out.println("Error reading file [" + INFO_FILE_NAME + "]. I/O Exception! on write");
 			e.printStackTrace();
+			
+		}
+		
+	}
+	
+	@SuppressWarnings("static-access")
+	private void getBankInfo() {
+		
+		try (BufferedReader bReader = new BufferedReader(new FileReader(new File(INFO_FILE_NAME)))) {
+			
+			String[] data = bReader.readLine().split(",");
+			
+			String customerName = data[0];
+			int customerID = Integer.parseInt(data[1]);
+			
+			if (data[2].equals("C")) {
+				
+				ChequingAccount account = new ChequingAccount(new Customer(customerName, customerID));
+				account.setOverdraftAmount(Integer.parseInt(data[3]));
+				account.setOverdraftFee(Integer.parseInt(data[4]));
+				
+			} else if (data[2].equals("S")) {
+				
+				SavingsAccount account = new SavingsAccount(new Customer(customerName, customerID));
+				account.setAnnualInterestRate(Integer.parseInt(data[3]));
+				
+			}
+			
+		} catch (IOException e) {
+			
+			System.out.println("Error reading file [" + INFO_FILE_NAME + "]. I/O Exception on read!");
+			e.printStackTrace();
+			
 		}
 		
 	}
