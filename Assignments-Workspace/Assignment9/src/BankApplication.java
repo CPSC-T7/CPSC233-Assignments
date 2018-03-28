@@ -56,6 +56,8 @@ public class BankApplication extends Application {
 	private Customer		customer;
 	private BankAccount		bankAccount;
 	
+	// TODO: READ / MAKE DATA
+	
 	private String			nameLabelText			= "Customer Name: " + bankAccount.getCustomer().getName();
 	private String			IDLabelText				= "Account ID: "
 			+ Integer.toString(bankAccount.getCustomer().getID());
