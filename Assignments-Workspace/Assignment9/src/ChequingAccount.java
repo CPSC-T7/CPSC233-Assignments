@@ -128,9 +128,11 @@ public class ChequingAccount extends BankAccount {
 	 * 
 	 * @param amount
 	 *            Total amount to withdraw.
+	 * @return
+	 * 			  Any error that occurred during withdraw
 	 */
 	@Override
-	public void withdraw(double amount) {
+	public String withdraw(double amount) {
 
 		// If the amount is positive...
 		if (amount > 0) {
@@ -150,14 +152,24 @@ public class ChequingAccount extends BankAccount {
 				// Withdraw the amount
 				this.setBalance(newBalance);
 				System.out.println("Your new balance is $" + Double.toString(newBalance));
+				return("");
 
 			} else {
 
 				// Don't withdraw the amount
 				System.out.println("Can't withdraw: Overdraft detected");
-
+				
+				// Return an overdraft error
+				return("Overdraft");
 			}
 
+		}else if (amount < 0) {	// If the amount is negative...
+			
+			// Return a range error
+			return("Negative");
+			
+		}else {
+			return("");
 		}
 
 	} // End of withdraw method

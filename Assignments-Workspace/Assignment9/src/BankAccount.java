@@ -96,8 +96,10 @@ abstract class BankAccount {
 	 * 
 	 * @param amount
 	 *            Total amount to deposit.
+	 * @return
+	 * 			  Any error that occurred during withdraw.        
 	 */
-	public void deposit(double amount) {
+	public String deposit(double amount) {
 		
 		// If the amount is a reasonable number...
 		if (amount > 0 && amount != Double.POSITIVE_INFINITY) {
@@ -105,7 +107,20 @@ abstract class BankAccount {
 			// Deposit the amount into the account
 			this.balance += amount;
 			System.out.println("Your new balance is $" + Double.toString(this.balance));
+			return("");
 			
+		}else if (amount < 0){		// If the amount is below 0...
+			
+			// Return a range error
+			return("Negative");
+			
+		}else if(amount == Double.POSITIVE_INFINITY) {  // If the amount is infinite...
+			
+			// Return a range error
+			return("Infinite");
+			
+		}else {
+			return("");
 		}
 		
 	}// End of deposit method
@@ -116,8 +131,10 @@ abstract class BankAccount {
 	 * 
 	 * @param amount
 	 *            Total amount to withdraw.
+	 * @return
+	 * 			  Any error that occurred during withdraw.
 	 */
-	public void withdraw(double amount) {
+	public String withdraw(double amount) {
 		
 		// If the amount is positive...
 		if (amount > 0) {
@@ -131,14 +148,26 @@ abstract class BankAccount {
 				// Withdraw the amount
 				this.balance = balance;
 				System.out.println("Your new balance is $" + Double.toString(balance));
+				return("");
 				
 			} else {
 				
 				// Don't withdraw the amount
 				System.out.println("Can't withdraw: Overdraft detected");
 				
+				// Return an overdraft error
+				return("Overdraft");
+				
 			}
 			
+		}else if(amount < 0) {		// If the amount is negative...
+			
+			// Return a range error
+			return("Negative");
+			
+		}else {
+			
+			return("");
 		}
 		
 	}// End of withdraw method

@@ -22,11 +22,15 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 /**
- * This class represents a the GUI for the bank application. It is meant to be
- * used in conjunction with the BankAcount class to tie people with their bank
- * accounts. <br>
- * When run, the user is presented with an interface showing the customer name,
- * ID number, and balance, as well as two text fields: One for an amount to
+ * This is the main class for the bank application. It is meant to be
+ * used in conjunction with the BankAcount and Customer class to tie people with 
+ * their bank accounts, as well as store and get their information from a text file.<br>
+ * 
+ * If the user does not have an account, they are presented with an interface that
+ * allows them to enter their name, and decide which type of account they want to create.
+ * 
+ * If the user has an account, they are presented with an interface showing the 
+ * customer name, ID number, and balance, as well as two text fields: One for an amount to
  * deposit, and one for an amount to withdraw. There is a button below this
  * which, when pressed, deposits and/or withdraws the specified amount(s) from
  * the attached savings account.
@@ -64,17 +68,18 @@ public class BankApplication extends Application {
 	
 	// GUI Elements
 	
-	//Existing Account
+	//Existing Account window
 	private Label			customerNameLabel		= new Label("Empty");
 	private Label			customerIDLabel			= new Label("Empty");
 	private Label			balanceLabel			= new Label("$0.0");
+	private Label 			errorLabel				= new Label("");
 	
 	private TextField		depositTextField		= new TextField(DEPOSIT_DEFAULT_TEXT);
 	private TextField		withdrawTextField		= new TextField(WITHDRAW_DEFAULT_TEXT);
 	
 	private Button			executeButton			= new Button(EXECUTE_BUTTON_TEXT);	
 	
-	//New Account
+	//New Account window
 	private Label 			askForNameLabel			= new Label(askNameLabelText);
 	private TextField		customerNameTextField	= new TextField(NAME_DEFAULT_TEXT);
 	
@@ -89,17 +94,17 @@ public class BankApplication extends Application {
 	 */
 	
 	public BankApplication() {
-		//If an account exists: read from the file.
+		// If an account exists: read from the file.
 		if (new File(INFO_FILE_NAME).isFile()) {
 			hasAccount = true;
 			getBankInfo();
 			
-			//Set the customer name/ID labels
+			// Set the customer name/ID labels
 			customerNameLabel.setText(customer.getName());
 			customerIDLabel.setText(Integer.toString(customer.getID()));
 			balanceLabel.setText("Current Balance: $" + Double.toString(bankAccount.getBalance()));
 			
-		}else { //If no accounts exist: create a new file
+		}else { // If no accounts exist: create a new file
 			hasAccount = false;
 		}
 	}
@@ -129,7 +134,7 @@ public class BankApplication extends Application {
 		/*
 		 * GUI layout for a created account:
 		 * 
-		 * Name-Label ID-Label Deposit-TextField Withdraw-TextField Execute-Button
+		 * Name-Label, ID-Label, Deposit-TextField, Withdraw-TextField, Execute-Button,
 		 * Balance-Label
 		 */
 		
@@ -148,15 +153,18 @@ public class BankApplication extends Application {
 		depositWithdrawVBox.getChildren().add(executeButton);
 		depositWithdrawVBox.getChildren().add(balanceLabel);
 		
+		depositWithdrawVBox.getChildren().add(errorLabel);
+		
 		//New scene for deposit withdraw
-		Scene depositWithdrawScene = new Scene(depositWithdrawVBox, 350, 150);
+		Scene depositWithdrawScene = new Scene(depositWithdrawVBox, 350, 200);
 		
 		
 		/*
 		 * GUI layout for a new account:
 		 * 
-		 * Name-Label ID-Label Deposit-TextField Withdraw-TextField Execute-Button
-		 * Balance-Label
+		 * Name-Directions-Label, Name-TextField, Account-Directions-Label,
+		 * Account-RadioButtons, Finish-Button
+		 * 
 		 */
 		
 		VBox newAccountVBox = new VBox(VBOX_PADDING);
@@ -185,28 +193,26 @@ public class BankApplication extends Application {
 		newCustomerAccountTypeHBox.getChildren().addAll(radioChequing, radioSavings);
 		newAccountVBox.getChildren().add(newCustomerAccountTypeHBox);
 		
-		//Finish creating account button
+		//Button to finish account creation
 		newAccountVBox.getChildren().add(finishAccountButton);
 		
-		
-		
 		//New scene for making a new account
-		Scene newAccountScene = new Scene(newAccountVBox, 350, 150);
+		Scene newAccountScene = new Scene(newAccountVBox, 350, 200);
 		
 		
-		// Draw the window
+		// Set the window title
 		primaryStage.setTitle("Bank Application");
 		
-		//Set the scene depending on whether there is an account or not
+		// Set the scene depending on whether there is an existing account or not
 		if (hasAccount == true) {
-			
 			primaryStage.setScene(depositWithdrawScene);
 			
 		}else {
-			
 			primaryStage.setScene(newAccountScene);
 		
 		}
+		
+		// Show the stage
 		primaryStage.show();
 		
 		// Set the button to withdraw and deposit the specified amounts
@@ -220,13 +226,13 @@ public class BankApplication extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 
-				//Get the customer's name from the TextField
+				// Get the customer's name from the TextField
 				String customerName 		= customerNameTextField.getText();
-				
-				//Set the customer's ID randomly
+				 
+				// Set the customer's ID randomly
 				int customerID 			= ThreadLocalRandom.current().nextInt(1000, 10000);
 				
-				//Create the customer object
+				// Create the customer object
 				customer = new Customer(customerName, customerID);
 				
 				// Create the customers account based on the radio button selection
@@ -268,16 +274,23 @@ public class BankApplication extends Application {
 				double toDeposit = 0;
 				double toWithdraw = 0;
 				
+				//Extra error catches for the GUI error message
+				boolean canParseDeposit = true;
+				boolean canParseWithdraw = true;
+				
 				// Try to parse the value in depositTextField to a usable double
 				try {
 					
 					toDeposit = Double.parseDouble(depositTextField.getText());
+					canParseDeposit = true;
 					
 				} catch (NumberFormatException e) {// If the value isn't a usable double
 					
 					// Only tell the user about bad input if it isn't the default value
 					if (!depositTextField.getText().equals(DEPOSIT_DEFAULT_TEXT)) {
 						System.out.println("Invalid Deposit Value.");
+						canParseDeposit = false;
+
 					}
 					
 				}
@@ -286,19 +299,46 @@ public class BankApplication extends Application {
 				try {
 					
 					toWithdraw = Double.parseDouble(withdrawTextField.getText());
+					canParseWithdraw = true;
 					
 				} catch (NumberFormatException e) { // If the value isn't a usable double
 					
 					// Only tell the user about bad input if it isn't the default value
 					if (!withdrawTextField.getText().equals(WITHDRAW_DEFAULT_TEXT)) {
 						System.out.println("Invalid Withdraw Value.");
+						canParseWithdraw = false;
+						
 					}
 					
 				}
 				
-				// Deposit and withdraw the amounts
-				bankAccount.deposit(toDeposit);
-				bankAccount.withdraw(toWithdraw);
+				// Deposit and withdraw the amounts, and any errors that occur
+				String depositError = bankAccount.deposit(toDeposit);
+				String withdrawError = bankAccount.withdraw(toWithdraw);
+				
+				//Display any errors that occur to the customer
+				if(withdrawError == "Negative") {
+					errorLabel.setText("Invalid Withdraw Value:  Can't withdraw negative values");
+					
+				}else if (withdrawError == "Overdraft") {
+					errorLabel.setText("Invalid Withdraw Value:  Overdraft amount reached");
+					
+				}else if (depositError == "Negative") {
+					errorLabel.setText("Invalid Deposit Value:  Can't deposit negative values");
+					
+				}else if (depositError == "Infinite") {
+					errorLabel.setText("Invalid Deposit Value:  Can't deposit infinite values");
+					
+				}else if(canParseDeposit == false) {
+					errorLabel.setText("Invalid Deposit Value:  Can't convert to type Double");
+					
+				}else if(canParseWithdraw == false) {
+					errorLabel.setText("Invalid Withdraw Value:  Can't convert to type Double");
+					
+				}else {
+					errorLabel.setText("");
+				}
+				
 				
 				// Update the balance label
 				balanceLabel.setText("Current Balance: $" + Double.toString(bankAccount.getBalance()));
